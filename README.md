@@ -1,4 +1,4 @@
-# safari-profile
+# safari-profile-switcher
 
 English | [日本語](README.ja.md)
 
@@ -18,7 +18,7 @@ Safari's AppleScript support has no profile API yet, so this tool relies on the 
 
 ```bash
 # Clone this repository.
-cd safari-profile
+cd safari-profile-switcher
 ./install.sh
 ```
 

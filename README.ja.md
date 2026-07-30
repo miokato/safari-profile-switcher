@@ -1,4 +1,4 @@
-# safari-profile
+# safari-profile-switcher
 
 [English](README.md) | 日本語
 
@@ -18,7 +18,7 @@ Safari本体のAppleScriptにはプロファイルを操作するAPIがまだ無
 
 ```bash
 # このリポジトリをクローン
-cd safari-profile
+cd safari-profile-switcher
 ./install.sh
 ```
 

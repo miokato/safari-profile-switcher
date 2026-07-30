@@ -1,0 +1,60 @@
+#!/bin/bash
+# safari-profile — Switch to a Safari profile window, or create one if none exists.
+#
+# Usage: safari-profile <profile name>
+#   e.g. safari-profile Work
+#        safari-profile 個人用
+#
+# The profile name must match the name shown in Safari's
+# "File > New Window" submenu (the ◯◯ part of "New ◯◯ Window").
+# Note that the default profile's name depends on the system locale
+# (Japanese: 個人用 / English: Personal).
+
+set -eu
+
+if [ $# -lt 1 ]; then
+  echo "Usage: safari-profile <profile name>  (e.g. Work, Personal)" >&2
+  exit 1
+fi
+
+exec osascript - "$1" <<'EOF'
+on run argv
+    set target to item 1 of argv
+
+    -- 1) Look for an existing window. Profile windows are titled
+    --    "<profile name> — <page title>" (em dash).
+    tell application "Safari"
+        activate
+        repeat with w in windows
+            if name of w starts with (target & " — ") then
+                try
+                    if miniaturized of w then set miniaturized of w to false
+                end try
+                set index of w to 1
+                return
+            end if
+        end repeat
+    end tell
+
+    -- 2) If not found, click the "New <profile> Window" item in the
+    --    File menu's submenu. Menu items are matched by profile name
+    --    rather than by title, so this works in any UI language.
+    tell application "System Events"
+        tell process "Safari"
+            set fileMenu to menu 1 of menu bar item 3 of menu bar 1
+            repeat with mi in menu items of fileMenu
+                try
+                    repeat with smi in menu items of menu 1 of mi
+                        if name of smi contains target then
+                            click smi
+                            return
+                        end if
+                    end repeat
+                end try
+            end repeat
+        end tell
+    end tell
+
+    error "Profile \"" & target & "\" not found. Check the profile name in Safari > Settings > Profiles."
+end run
+EOF
